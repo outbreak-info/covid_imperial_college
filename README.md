@@ -16,3 +16,6 @@ The Outbreak.info resources API was built using the Biothings SDK. Detailed docu
 * [PDB](https://github.com/SuLab/covid_pdb_datasets)
 * [ClinicalTrials](https://github.com/flaneuse/clinical-trials)
 * [Dataverse](https://github.com/juliamullen/dataverses)
+
+### Detailed Documentation of the parser
+Jupyter notebooks for the parser provides more detailed documentation on the parser itself.
