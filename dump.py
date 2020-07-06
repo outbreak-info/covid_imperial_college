@@ -9,7 +9,7 @@ import biothings.hub.dataload.dumper
 
 class ImperialDumper(biothings.hub.dataload.dumper.DummyDumper):
 
-    SRC_NAME = "imperialcollege"
+    SRC_NAME = "covid_imperial_college"
     __metadata__ = {
         "src_meta": {
             "author":{
