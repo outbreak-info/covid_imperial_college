@@ -19,7 +19,7 @@ except ImportError:
 class ImperialCollegeUploader(biothings.hub.dataload.uploader.BaseSourceUploader):
 
     main_source="covid_imperial_college"
-    name = "imperialcollege"
+    name = "covid_imperial_college"
     __metadata__ = {
         "src_meta": {
             "author":{
