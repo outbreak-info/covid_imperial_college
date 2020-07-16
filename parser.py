@@ -297,15 +297,15 @@ def load_annotations():
             yield(eachreport)
     except:
         logging.warning("report fetching failed")
-    try:
-        resource_list = get_resources()
-        for eachresource in resource_list:
-            yield(eachresource)
-    except:
-        logging.warning("resource fetching failed")
-    try:
-        analyses_list = get_analyses()
-        for eachanalysis in analyses_list:
-            yield(eachanalysis)
-    except:
-        logging.warning("analysis fetching failed")
+#    try:
+#        resource_list = get_resources()
+#        for eachresource in resource_list:
+#            yield(eachresource)
+#    except:
+#        logging.warning("resource fetching failed")
+#    try:
+#        analyses_list = get_analyses()
+#        for eachanalysis in analyses_list:
+#            yield(eachanalysis)
+#    except:
+#        logging.warning("analysis fetching failed")
