@@ -3,8 +3,13 @@ from bs4 import BeautifulSoup
 import json
 from datetime import datetime
 import re
-from biothings import config
-logging = config.logger
+
+
+import requests
+from bs4 import BeautifulSoup
+import json
+from datetime import datetime
+import re
 
 
 def create_curationObject():
@@ -132,9 +137,9 @@ def get_funding(soupobject):
                        "name": funders[i]
                        },
                       "identifier": fundidlist[i],
-                      "name": ""
             }
             fundlist.append(fundict)
+            i=i+1
         fundflag = True
     else:
         fundlist = []
@@ -150,6 +155,7 @@ def create_id(description_text):
 
 
 def transform_resource_meta(metaobject):
+    baseurl = "http://www.imperial.ac.uk"
     tmpdict = {
       "@context": {
         "schema": "http://schema.org/",
@@ -181,7 +187,7 @@ def transform_resource_meta(metaobject):
         datePublished = "Not Available"  
     if "data" in basetype:
         tmpdict['@type'] = "Dataset"
-        tmpdict['dataDownload'] = {
+        tmpdict['distribution'] = {
             "contentUrl": url,
             "dateModified": datePublished
         }
@@ -206,7 +212,6 @@ def transform_resource_meta(metaobject):
 
 
 
-
 def get_reports():
     reports_url = 'https://spiral.imperial.ac.uk:8443/handle/10044/1/78555/simple-search?location=10044%2F1%2F78555&query=&filter_field_1=type&filter_type_1=equals&filter_value_1=Report&rpp=100&sort_by=score&order=DESC&etal=1&submit_search=Update'
     url_list = get_report_links(reports_url)
@@ -227,85 +232,66 @@ def get_reports():
         yield(base_info)
 
         
+
 def get_resources():
     curatedBy = create_curationObject()
     url = 'http://www.imperial.ac.uk/mrc-global-infectious-disease-analysis/covid-19/covid-19-scientific-resources/'
     response = requests.get(url)
-    if response.status_code == 200:
-        parsedlisting = BeautifulSoup(response.text, "html.parser")
-        baseurl = "http://www.imperial.ac.uk/"
-        resourceclass = parsedlisting.findAll("div", {"class": "media-item full light-secondary reverse equal-height"})
-        resourcelist = []
-        for eachblock in resourceclass:
-            try:
-                tmpdict = transform_resource_meta(eachblock) 
-                tmpdict["curatedBy"] = curatedBy
-                yield(tmpdict)
-            except:
-                logging.warning("resource transformation for: "+eachblock+" failed.")
-    else:
-        logging.warning("Imperial college Covid-19 resources not found")
+    parsedlisting = BeautifulSoup(response.text, "html.parser")
+    resourceclass = parsedlisting.findAll("div", {"class": "media-item full light-secondary reverse equal-height"})
+    resourcelist = []
+    for eachblock in resourceclass:
+        tmpdict = transform_resource_meta(eachblock)
+        tmpdict["curatedBy"] = curatedBy
+        yield(tmpdict)  
+        
 
         
-def get_analysis():
+def get_analyses():
+    baseurl = 'http://www.imperial.ac.uk'
     curatedBy = create_curationObject()
     analysislisturl = 'http://www.imperial.ac.uk/mrc-global-infectious-disease-analysis/covid-19/covid-19-planning-tools/'
     analysisresponse = requests.get(analysislisturl)
-    if analysisresponse.status_code == 200:
-        analysislisting = BeautifulSoup(analysisresponse.text, "html.parser")
-        analysisclass = analysislisting.findAll("div", {"class": "media-item full light-secondary reverse equal-height"})
+    analysislisting = BeautifulSoup(analysisresponse.text, "html.parser")
+    analysisclass = analysislisting.findAll("div", {"class": "media-item full light-secondary reverse equal-height"})
 
-        for eachblock in analysisclass:
-            tmpdict = {
-              "@context": {
-                "schema": "http://schema.org/",
-                "outbreak": "https://discovery.biothings.io/view/outbreak/"
-              },
-              "author": {
-                "@type": "Organization",
-                "name": 'Imperial College COVID-19 Response Team',
-                "affiliation": ["MRC Centre for Global Infectious Disease Analysis",
-                                "Imperial College London"]
-              }
-            }
-            try:
-                tmpdict['name'] = eachblock.find("h3",{"class":"title"}).get_text()
-                tmpurl = eachblock.find("a").get("href") 
-                tmpdict['species'] = "Homo sapiens"
-                tmpdict['infectiousAgent'] = "SARS-CoV-2"
-                tmpdict['infectiousDisease'] = "COVID-19"
-                tmpdict['description'] = eachblock.find("p").get_text()
-                tmpdict['identifier'] = create_id(tmpdict['description'])
-                tmpdict['_id'] = tmpdict['identifier']
-                tmpdict["curatedBy"] = curatedBy
-                if "http" in tmpurl:
-                    tmpdict['url'] = tmpurl
-                else:
-                    tmpdict['url'] = baseurl+tmpurl
-                tmpdict['datePublished'] = 'Not Available'
-                yield(tmpdict)
-            except:
-                logging.warning("analysis transformation for: "+eachblock+" failed.")
-    else:
-        logging.warning("Imperial college Covid-19 planning tools not found")
+    for eachblock in analysisclass:
+        tmpdict = {
+          "@context": {
+            "schema": "http://schema.org/",
+            "outbreak": "https://discovery.biothings.io/view/outbreak/"
+          },
+          "author": {
+            "@type": "Organization",
+            "name": 'Imperial College COVID-19 Response Team',
+            "affiliation": ["MRC Centre for Global Infectious Disease Analysis",
+                            "Imperial College London"]
+          }
+        }
+        tmpdict['name'] = eachblock.find("h3",{"class":"title"}).get_text()
+        tmpurl = eachblock.find("a").get("href") 
+        tmpdict['species'] = "Homo sapiens"
+        tmpdict['infectiousAgent'] = "SARS-CoV-2"
+        tmpdict['infectiousDisease'] = "COVID-19"
+        tmpdict['description'] = eachblock.find("p").get_text()
+        tmpdict['identifier'] = create_id(tmpdict['description'])
+        tmpdict['_id'] = tmpdict['identifier']
+        tmpdict["curatedBy"] = curatedBy
+        if "http" in tmpurl:
+            tmpdict['url'] = tmpurl
+        else:
+            tmpdict['url'] = baseurl+tmpurl
+        tmpdict['datePublished'] = 'Not Available'
+        yield(tmpdict)
+       
 
-        
+    
 def load_annotations():
-    try:
-        report_list = get_reports()
-        for eachreport in report_list:
-            yield(eachreport)
-    except:
-        logging.warning("report fetching failed")
-    try:
-        resource_list = get_resources()
-        for eachresource in resource_list:
-            yield(eachresource)
-    except:
-        logging.warning("resource fetching failed")
-    try:
-        analyses_list = get_analyses()
-        for eachanalysis in analyses_list:
-            yield(eachanalysis)
-    except:
-        logging.warning("analysis fetching failed")
+    report_list = get_reports()
+    yield from(report_list)
+        
+    resource_list = get_resources()
+    yield from(resource_list)
+        
+    analyses_list = get_analyses()
+    yield from(analyses_list)
