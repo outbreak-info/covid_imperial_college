@@ -120,23 +120,13 @@ def get_funding(soupobject):
     funders = get_meta_content(fundersfield)
     fundercheck = len(fundersfield)
     if fundercheck > 0:
-        identifiersfield = soupobject.findAll("meta", {"name":"DC.identifier"}) 
-        fundidlist = []
-        for eachitem in identifiersfield:
-            eachitemcontent = eachitem.get("content")
-            if "https:" in eachitemcontent:
-                miscurls = eachitemcontent
-            else:
-                fundingid = eachitemcontent
-                fundidlist.append(fundingid)
         fundlist = []
         i=0
         while i < len(funders):
             fundict = {"@type": "MonetaryGrant",
                        "funder": {
                        "name": funders[i]
-                       },
-                      "identifier": fundidlist[i],
+                       }
             }
             fundlist.append(fundict)
             i=i+1
