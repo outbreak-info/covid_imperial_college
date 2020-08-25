@@ -5,13 +5,6 @@ from datetime import datetime
 import re
 
 
-import requests
-from bs4 import BeautifulSoup
-import json
-from datetime import datetime
-import re
-
-
 def create_curationObject():
     now = datetime.now()
     curatedBy = {
