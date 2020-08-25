@@ -7,7 +7,7 @@ import config
 biothings.config_for_app(config)
 
 MAP_URL = "https://raw.githubusercontent.com/SuLab/outbreak.info-resources/master/outbreak_resources_es_mapping.json"
-MAP_VARS = ["@type", "abstract", "author", "citedBy", "curatedBy", "dateModified", "datePublished", "doi", "funding", "identifier", "citedBy", "journalName", "journalNameAbbrev", "keywords", "license", "name", "publicationType", "url","distribution", "species", "infectiousAgent", "protocolSetting", "protocolCategory", "description", "downloadUrl","infectiousDisease"]
+MAP_VARS = ["@type", "abstract", "author", "citedBy", "curatedBy", "dateModified", "datePublished", "doi", "funding", "identifier", "citedBy", "journalName", "journalNameAbbrev", "keywords", "license", "name", "publicationType", "url","distribution", "species", "infectiousAgent", "protocolSetting", "protocolCategory", "description", "contentUrl","infectiousDisease"]
 
 # when code is exported, import becomes relative
 try:
