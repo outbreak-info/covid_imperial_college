@@ -12,7 +12,7 @@ def create_curationObject():
     'identifier': 'imperialcollege',
     'url': 'http://www.imperial.ac.uk/mrc-global-infectious-disease-analysis/covid-19/covid-19-reports/',
     "name": "MRC Centre for Global Infectious Disease Analysis",
-    "affiliation": ["Imperial College London"],
+    "affiliation": [{"name":"Imperial College London"}],
     "curationDate":now.strftime("%Y-%m-%d")
     }    
     return(curatedBy)
@@ -147,8 +147,8 @@ def transform_resource_meta(metaobject):
       "author": {
         "@type": "Organization",
         "name": 'Imperial College COVID-19 Response Team',
-        "affiliation": ["MRC Centre for Global Infectious Disease Analysis",
-                        "Imperial College London"]
+        "affiliation": [{"name":"MRC Centre for Global Infectious Disease Analysis"},
+                        {"name":"Imperial College London"}]
       }
     }
     tmpdict['name'] = metaobject.find("h3",{"class":"title"}).get_text()
@@ -247,8 +247,8 @@ def get_analyses():
           "author": {
             "@type": "Organization",
             "name": 'Imperial College COVID-19 Response Team',
-            "affiliation": ["MRC Centre for Global Infectious Disease Analysis",
-                            "Imperial College London"]
+            "affiliation": [{"name":"MRC Centre for Global Infectious Disease Analysis"},
+                            {"name":"Imperial College London"}]
           }
         }
         tmpdict['name'] = eachblock.find("h3",{"class":"title"}).get_text()
