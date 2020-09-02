@@ -9,8 +9,8 @@ def create_curationObject():
     now = datetime.now()
     curatedBy = {
     "@type": "Organization",
-    'identifier': 'imperialcollege',
-    'url': 'http://www.imperial.ac.uk/mrc-global-infectious-disease-analysis/covid-19/covid-19-reports/',
+    "identifier": "imperialcollege",
+    "url": "http://www.imperial.ac.uk/mrc-global-infectious-disease-analysis/covid-19/covid-19-reports/",
     "name": "MRC Centre for Global Infectious Disease Analysis",
     "affiliation": [{"name":"Imperial College London"}],
     "curationDate":now.strftime("%Y-%m-%d")
@@ -144,12 +144,12 @@ def transform_resource_meta(metaobject):
         "schema": "http://schema.org/",
         "outbreak": "https://discovery.biothings.io/view/outbreak/"
       },
-      "author": {
+      "author": [{
         "@type": "Organization",
         "name": 'Imperial College COVID-19 Response Team',
         "affiliation": [{"name":"MRC Centre for Global Infectious Disease Analysis"},
                         {"name":"Imperial College London"}]
-      }
+      }]
     }
     tmpdict['name'] = metaobject.find("h3",{"class":"title"}).get_text()
     tmpdict['description'] = metaobject.find("p").get_text()
@@ -244,12 +244,12 @@ def get_analyses():
             "schema": "http://schema.org/",
             "outbreak": "https://discovery.biothings.io/view/outbreak/"
           },
-          "author": {
+          "author": [{
             "@type": "Organization",
             "name": 'Imperial College COVID-19 Response Team',
             "affiliation": [{"name":"MRC Centre for Global Infectious Disease Analysis"},
                             {"name":"Imperial College London"}]
-          }
+          }]
         }
         tmpdict['name'] = eachblock.find("h3",{"class":"title"}).get_text()
         tmpurl = eachblock.find("a").get("href") 
