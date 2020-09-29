@@ -252,6 +252,7 @@ def get_analyses():
           }]
         }
         tmpdict['name'] = eachblock.find("h3",{"class":"title"}).get_text()
+        tmpdict['@type'] = 'Analysis'
         tmpurl = eachblock.find("a").get("href") 
         tmpdict['species'] = "Homo sapiens"
         tmpdict['infectiousAgent'] = "SARS-CoV-2"
