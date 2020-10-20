@@ -170,6 +170,7 @@ def transform_resource_meta(metaobject):
         datePublished = "Not Available"  
     if "data" in basetype:
         tmpdict['@type'] = "Dataset"
+        tmpdict['datePublished'] = datePublished
         tmpdict['distribution'] = {
             "contentUrl": url,
             "dateModified": datePublished
@@ -265,7 +266,7 @@ def get_analyses():
             tmpdict['url'] = tmpurl
         else:
             tmpdict['url'] = baseurl+tmpurl
-        tmpdict['datePublished'] = 'Not Available'
+        tmpdict['datePublished'] = '0000-00-00'
         yield(tmpdict)
        
 
