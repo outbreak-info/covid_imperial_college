@@ -156,12 +156,17 @@ def transform_resource_meta(metaobject):
     tmpdict['identifier'] = create_id(tmpdict['description'])
     tmpdict['_id'] = tmpdict['identifier']
     basetype = metaobject.find("span",{"class":"link primary"}).get_text()
-    tmpurl = metaobject.find("a").get("href") 
-    
-    if "http" in tmpurl:
-        url = tmpurl
-    else:
-        url = baseurl+tmpurl
+    try:
+        tmpurl = metaobject.find("a").get("href") 
+
+        if "http" in tmpurl:
+            url = tmpurl
+        else:
+            url = baseurl+tmpurl
+
+    except AttributeError:
+        url = None
+
     try:
         basedate = re.findall("\(\d{2}\-\d{2}\-\d{4}\)", tmpdict['description'])[0].strip("(").strip(")")
         datetime_object = datetime.strptime(basedate, '%d-%m-%Y')
@@ -171,19 +176,22 @@ def transform_resource_meta(metaobject):
     if "data" in basetype:
         tmpdict['@type'] = "Dataset"
         tmpdict['datePublished'] = datePublished
-        tmpdict['distribution'] = {
-            "contentUrl": url,
-            "dateModified": datePublished
-        }
+        if url:
+            tmpdict['distribution'] = {
+                "contentUrl": url,
+                "dateModified": datePublished
+            }
         tmpdict['species']: "Homo sapiens"
         tmpdict['infectiousAgent']: "SARS-CoV-2"
     elif "code" in basetype:
         tmpdict['@type'] = "SoftwareSourceCode"
-        tmpdict['downloadUrl'] = url
+        if url:
+            tmpdict['downloadUrl'] = url
         tmpdict['datePublished'] = datePublished
     elif "survey" in basetype:
         tmpdict['@type'] = "Protocol"
-        tmpdict['url'] = url
+        if url:
+            tmpdict['url'] = url
         tmpdict['datePublished'] = datePublished
         tmpdict['protocolSetting'] = "public"
         tmpdict["protocolCategory"] = "protocol"
