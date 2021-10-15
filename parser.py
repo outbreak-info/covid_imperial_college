@@ -108,21 +108,57 @@ def get_authors(soupobject):
     return(authorlist)
 
 
+def generate_funding_dict(funder,identifier=None):
+    fundict = {"@type": "MonetaryGrant",
+               "funder": {"name": funder},
+               "name": ""
+               }    
+    if identifier != None:
+        fundict["identifier"]=identifier
+    return(fundict)
+
+
 def get_funding(soupobject):
     fundersfield = soupobject.findAll("meta", {"name":"DC.contributor"})
     funders = get_meta_content(fundersfield)
     fundercheck = len(fundersfield)
     if fundercheck > 0:
+        identifiersfield = soupobject.findAll("meta", {"name":"DC.identifier"}) 
+        fundidlist = []
+        for eachitem in identifiersfield:
+            eachitemcontent = eachitem.get("content")
+            if ("https:" in eachitemcontent) or ("http:" in eachitemcontent):
+                miscurls = eachitemcontent
+            else:
+                fundingid = eachitemcontent
+                fundidlist.append(fundingid)
         fundlist = []
         i=0
-        while i < len(funders):
-            fundict = {"@type": "MonetaryGrant",
-                       "funder": {
-                       "name": funders[i]
-                       }
-            }
-            fundlist.append(fundict)
-            i=i+1
+        if len(funders)==len(fundidlist): ## There are the same amount of funders as ids
+            while i < len(funders):
+                fundict = generate_funding_dict(funders[i],fundidlist[i])
+                fundlist.append(fundict)
+                i=i+1
+        elif len(funders)>len(fundidlist): ## There are more funders than ids, map the MR ones, then ignore ids
+            mrfunds = [x for x in funders if "MRC" in x]
+            mrids = [x for x in fundidlist if "MR" in x]
+            while i < len(mrfunds):
+                fundict = generate_funding_dict(mrfunds[i],mrids[i])
+                fundlist.append(fundict)
+                i=i+1
+            remaining_funders = [x for x in funders if x not in mrfunds]
+            remaining_fundids = [x for x in fundidlist if x not in mrids]
+            j=0
+            if (len(remaining_fundids)==0) and (len(remaining_funders)>0):
+                while j<len(remaining_funders):
+                    fundict = generate_funding_dict(remaining_funders[j])
+                    fundlist.append(fundict)
+                    j=j+1
+        else: ##There are more ids than funders, and it will be impossible to map them
+            while i < len(funders):
+                fundict = generate_funding_dict(funders[i])
+                fundlist.append(fundict)
+                i=i+1            
         fundflag = True
     else:
         fundlist = []
