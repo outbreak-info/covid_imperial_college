@@ -20,7 +20,7 @@ def create_curationObject():
 
 def get_report_links(reports_url):
     recordlist = requests.get(reports_url)
-    spiralbase = "https://spiral.imperial.ac.uk:8443/"
+    spiralbase = "https://spiral.imperial.ac.uk"
     parsedrecordlist = BeautifulSoup(recordlist.text, "html.parser")
     urlstable = parsedrecordlist.findAll("table")[0]
     urlstublist = urlstable.findAll("a")
@@ -241,7 +241,7 @@ def transform_resource_meta(metaobject):
 
 
 def get_reports():
-    reports_url = 'https://spiral.imperial.ac.uk:8443/handle/10044/1/78555/simple-search?location=10044%2F1%2F78555&query=&filter_field_1=type&filter_type_1=equals&filter_value_1=Report&rpp=100&sort_by=score&order=DESC&etal=1&submit_search=Update'
+    reports_url = 'https://spiral.imperial.ac.uk/handle/10044/1/78555/simple-search?location=10044%2F1%2F78555&query=&filter_field_1=type&filter_type_1=equals&filter_value_1=Report&rpp=100&sort_by=dc.date.issued_dt&order=DESC&etal=0&submit_search=Update'
     url_list = get_report_links(reports_url)
     curatedBy = create_curationObject()
 
