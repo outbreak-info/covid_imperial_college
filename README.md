@@ -1,4 +1,5 @@
 # Imperial College London covid 19 resources data plugin
+[![DOI](https://zenodo.org/badge/276192110.svg)](https://zenodo.org/badge/latestdoi/276192110)
 
 Imperial College London's open access policy can be found at https://www.imperial.ac.uk/research-and-innovation/support-for-staff/scholarly-communication/open-access/oa-policy/
 
