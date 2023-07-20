@@ -35,7 +35,6 @@ class ImperialCollegeUploader(biothings.hub.dataload.uploader.BaseSourceUploader
         }
     }
     idconverter = None
-    storage_class = biothings.hub.dataload.storage.BasicStorage
 
     def load_data(self, data_folder):
         self.logger.info("No data to load from file for imperial college")
